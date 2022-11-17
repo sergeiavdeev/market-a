@@ -1,0 +1,19 @@
+<div class="row justify-content-md-center mt-5">
+    <div class="col-lg-3 my-auto">
+        <form [formGroup]="form">
+            <div class="mb-3 form-floating">
+                <input type="text" class="form-control" id="username" placeholder="Имя пользователя"
+                       formControlName="username"
+                       [ngClass]="form.controls.username.invalid ? 'is-invalid' : ''">
+                <label for="username" class="form-label">Имя пользователя</label>
+            </div>
+            <div class="mb-3 form-floating">
+                <input type="password" class="form-control" id="password" placeholder="Пароль"
+                       formControlName="password"
+                       [ngClass]="form.controls.password.invalid ? 'is-invalid' : ''">
+                <label for="password" class="form-label">Пароль</label>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid" (click)="auth()">Войти</button>
+        </form>
+    </div>
+</div>
