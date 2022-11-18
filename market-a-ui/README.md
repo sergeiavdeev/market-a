@@ -11,7 +11,7 @@ change any of the source files.
 
 ### Catalog
 
-![Иллюстрация к проекту](./doc/img/cart.png)
+![Иллюстрация к проекту](./doc/img/catalog.png)
 
 ### Cart
 
