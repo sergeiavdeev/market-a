@@ -12,11 +12,14 @@ export const cartReducer = (
     switch (action.type) {
         case ECartActions.Add:
             cartRows = state.cartRows.slice(0);
-            tmpRow = cartRows.findIndex(el => el.productId == action.payload);
+            tmpRow = cartRows.findIndex(el => el.product.id == action.payload.id);
             if (tmpRow == -1) {
-                cartRows.push({productId: action.payload, count: 1});
+                cartRows.push({count: 1, product: action.payload});
             } else {
-                cartRows[tmpRow] = {productId: action.payload, count: cartRows[tmpRow].count + 1};
+                cartRows[tmpRow] = {
+                    count: cartRows[tmpRow].count + 1,
+                    product: action.payload
+                };
             }
             return {
                 ...state,
@@ -24,24 +27,25 @@ export const cartReducer = (
             }
         case ECartActions.Delete:
             cartRows = state.cartRows.slice(0);
-            cartRows.map((el, index) => {
-                if (el.productId == action.payload) {
-                    delete cartRows[index];
-                    return;
-                }
-                return el;
-            });
+            tmpRow = cartRows.findIndex(el => el.product.id == action.payload);
+            if (tmpRow != -1) cartRows.splice(tmpRow, 1);
             return {
                 ...state,
                 cartRows
             }
         case ECartActions.SetCount:
             cartRows = state.cartRows.slice(0);
-            tmpRow = cartRows.findIndex(el => el.productId == action.payload.productId);
+            tmpRow = cartRows.findIndex(el => el.product.id == action.payload.product.id);
             if (tmpRow == -1) {
-                cartRows.push({productId: action.payload.productId, count: action.payload.count});
+                cartRows.push({
+                    count: action.payload.count,
+                    product: action.payload.product
+                });
             } else {
-                cartRows[tmpRow] = {productId: action.payload.productId, count: action.payload.count};
+                cartRows[tmpRow] = {
+                    count: action.payload.count,
+                    product: action.payload.product
+                };
             }
             return {
                 ...state,

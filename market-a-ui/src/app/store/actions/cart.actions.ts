@@ -1,5 +1,6 @@
 import {Action} from "@ngrx/store";
 import {CartRow} from "../../entities/cart.row";
+import {Product} from "../../entities/product";
 
 export enum ECartActions {
     Add = "[Cart] add",
@@ -11,7 +12,7 @@ export enum ECartActions {
 export class Add implements Action {
     public readonly type = ECartActions.Add;
 
-    constructor(public payload: string) {
+    constructor(public payload: Product) {
     }
 }
 

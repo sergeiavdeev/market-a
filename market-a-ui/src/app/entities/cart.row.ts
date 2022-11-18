@@ -1,4 +1,6 @@
+import {Product} from "./product";
+
 export class CartRow {
-    productId: string = "";
+    product: Product = new Product();
     count: number = 0;
 }

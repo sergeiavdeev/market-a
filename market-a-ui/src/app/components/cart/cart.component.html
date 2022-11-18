@@ -1,1 +1,69 @@
-<h1>Корзина</h1>
+<h3>Корзина</h3>
+<div class="row">
+    <div class="col-md-8">
+        <div *ngFor="let row of cart$|async" class="card mt-5">
+            <div class="row g-0">
+                <div class="col-md-2">
+                    <img src="{{row.product.files.length > 0 ? filePath + row.product.id + '/' + row.product.files[0].name : '/assets/img/no-photo-05.png'}}"
+                         class="img-fluid rounded-start" alt="Ошибка">
+                </div>
+                <div class="col-md-10">
+                    <div class="card-body">
+                        <h5 class="card-title">{{row.product.title}}</h5>
+                        <div class="row mt-3 align-items-center">
+                            <div class="col-md-3">Цена: {{row.product.price}} &#8381;</div>
+                            <div class="col-md-5">
+                                <div class="row">
+                                    <label for="inputCount" class="col-md-6 col-form-label text-end">Количество</label>
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" id="inputCount" #inputCount
+                                               value="{{row.count}}"
+                                               (change)="countChange(inputCount.value, row.product)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-end">Сумма: {{row.count * row.product.price}} &#8381;</div>
+                            <div class="col-md-1 text-end">
+                                <button type="button" class="btn btn-light" (click)="deleteFromCart(row.product.id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd"
+                                              d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mt-5">
+            <div class="card-header">
+                <button class="btn btn-success w-100">Перейти к оформлению</button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12"><h5>Ваша козина</h5></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6"><h6>Товары ({{cartCount$|async}})</h6></div>
+                    <div class="col-md-6 text-end">{{cartSum$|async}} &#8381;</div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6"><h6>Скидка</h6></div>
+                    <div class="col-md-6 text-end">0 &#8381;</div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col md-6"><h5>Общая стоимось</h5></div>
+                    <div class="col md-6 text-end">{{cartSum$|async}} &#8381;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
