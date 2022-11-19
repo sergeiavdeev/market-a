@@ -20,6 +20,6 @@ public class Role {
     private UUID id;
 
     @Column("name")
-    private User.UserRole role;
+    private String name;
 
 }

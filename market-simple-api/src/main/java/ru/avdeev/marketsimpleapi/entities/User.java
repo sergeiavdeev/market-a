@@ -10,13 +10,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Data
-@Table(name="usr")
+@Table(name = "usr")
 public class User implements UserDetails {
 
     @Id
@@ -30,6 +31,24 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @Column("email")
+    private String email;
+
+    @Column("first_name")
+    private String firstName;
+
+    @Column("last_name")
+    private String lastName;
+
+    @Column("patronymic")
+    private String patronymic;
+
+    @Column("dob")
+    private Date dateOfBirthday;
+
+    @Column("is_blocked")
+    private Boolean isBlocked;
+
     @Transient
     private List<Role> roles;
 
@@ -37,7 +56,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for(Role userRole : roles) grantedAuthorities.add(new SimpleGrantedAuthority(userRole.getRole().name()));
+        for (Role userRole : roles) grantedAuthorities.add(new SimpleGrantedAuthority(userRole.getName()));
         return grantedAuthorities;
     }
 
@@ -66,8 +85,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    public enum UserRole {
-        ROLE_USER,
-        ROLE_ADMIN
-    }
 }

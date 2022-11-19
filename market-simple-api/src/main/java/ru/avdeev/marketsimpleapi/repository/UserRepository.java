@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface UserRepository extends R2dbcRepository<User, UUID> {
 
-    Mono<User> findByUsername(String name);
+    Mono<User> findByUsernameAndIsBlocked(String name, Boolean isBlocked);
 }

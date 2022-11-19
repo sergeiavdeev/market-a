@@ -16,7 +16,8 @@ export const userReducer = (
         case EUserActions.AuthSuccess:
             return {
                 ...state,
-                user: action.payload,
+                user: action.payload.user,
+                token: action.payload.token,
                 pending: false
             }
         case EUserActions.AuthError:

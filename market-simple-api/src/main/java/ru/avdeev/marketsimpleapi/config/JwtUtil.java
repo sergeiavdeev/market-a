@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.avdeev.marketsimpleapi.entities.Role;
 import ru.avdeev.marketsimpleapi.entities.User;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -42,8 +42,8 @@ public class JwtUtil {
 
     public String generateToken(User user) {
 
-        HashMap<String, List<Role>> claims = new HashMap<>();
-        claims.put("roles", user.getRoles());
+        HashMap<String, List<String>> claims = new HashMap<>();
+        claims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
 
         long expirationSeconds = Long.parseLong(expirationTime);
         Date creationDate = new Date();
@@ -56,5 +56,17 @@ public class JwtUtil {
                 .setExpiration(expirationDate)
                 .signWith(Keys.hmacShaKeyFor(salt.getBytes()))
                 .compact();
+    }
+
+    public static <T> List<T> castList(Class<? extends T> clazz, Collection<?> rawCollection) {
+        List<T> result = new ArrayList<>(rawCollection.size());
+        for (Object o : rawCollection) {
+            try {
+                result.add(clazz.cast(o));
+            } catch (ClassCastException e) {
+                // log the exception or other error handling
+            }
+        }
+        return result;
     }
 }

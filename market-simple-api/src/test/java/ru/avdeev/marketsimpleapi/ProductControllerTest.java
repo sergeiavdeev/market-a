@@ -1,7 +1,10 @@
 package ru.avdeev.marketsimpleapi;
 
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,17 +13,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import ru.avdeev.marketsimpleapi.config.JwtUtil;
-import ru.avdeev.marketsimpleapi.dto.ProductPageResponse;
+import ru.avdeev.marketsimpleapi.dto.PageResponse;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.entities.Role;
 import ru.avdeev.marketsimpleapi.entities.User;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 
 
 @ExtendWith(SpringExtension.class)
@@ -46,8 +49,8 @@ public class ProductControllerTest {
         user.setUsername("admin");
         user.setPassword("admin");
         List<Role> roles = new ArrayList<>();
-        roles.add(new Role(UUID.fromString("98e02bb8-7b56-4dfd-bacd-499bad1c9ae8"), User.UserRole.ROLE_ADMIN));
-        roles.add(new Role(UUID.fromString("98e02bb8-7b56-4dfd-bacd-499bad1c9ae7"), User.UserRole.ROLE_USER));
+        roles.add(new Role(UUID.fromString("98e02bb8-7b56-4dfd-bacd-499bad1c9ae8"), "ROLE_ADMIN"));
+        roles.add(new Role(UUID.fromString("98e02bb8-7b56-4dfd-bacd-499bad1c9ae7"), "ROLE_USER"));
         user.setRoles(roles);
         token = jwtUtil.generateToken(user);
 
@@ -70,7 +73,7 @@ public class ProductControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(ProductPageResponse.class).value(page -> {
+                .expectBody(PageResponse.class).value(page -> {
                     assertThat(page.getSize()).isEqualTo(5);
                     assertThat(page.getNumber()).isEqualTo(1);
                 });

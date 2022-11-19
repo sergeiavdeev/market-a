@@ -1,6 +1,7 @@
 import {Action} from "@ngrx/store";
-import {Credentials, User} from "../../entities/user";
+import {Credentials} from "../../entities/user";
 import {HttpResponse} from "@angular/common/http";
+import {IUserState} from "../state/user.state";
 
 export enum EUserActions {
 
@@ -20,7 +21,7 @@ export class Auth implements Action {
 export class AuthSuccess implements Action {
     public readonly type = EUserActions.AuthSuccess;
 
-    constructor(public payload: User) {
+    constructor(public payload: IUserState) {
     }
 }
 

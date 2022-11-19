@@ -22,9 +22,10 @@ export class AppComponent {
     ngOnInit() {
         console.log('App init');
         let user = localStorage.getItem("user");
+        let token = localStorage.getItem("token");
         if (user != null) {
             user = JSON.parse(user);
-            this.store.dispatch({type: EUserActions.AuthSuccess, payload: user});
+            this.store.dispatch({type: EUserActions.AuthSuccess, payload: {toke: token, user: user}});
         }
     }
 }

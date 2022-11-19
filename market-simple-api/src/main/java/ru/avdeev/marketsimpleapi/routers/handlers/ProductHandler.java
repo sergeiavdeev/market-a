@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import ru.avdeev.marketsimpleapi.dto.PageResponse;
 import ru.avdeev.marketsimpleapi.dto.ProductCreateRequest;
-import ru.avdeev.marketsimpleapi.dto.ProductPageResponse;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.services.ProductService;
 
@@ -32,7 +32,7 @@ public class ProductHandler {
                         request.queryParam("minPrice"),
                         request.queryParam("maxPrice"),
                         request.queryParam("sort")
-                ), ProductPageResponse.class);
+                ), PageResponse.class);
 
     }
 

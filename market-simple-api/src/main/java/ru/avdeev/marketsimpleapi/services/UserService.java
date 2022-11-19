@@ -1,34 +1,31 @@
 package ru.avdeev.marketsimpleapi.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.avdeev.marketsimpleapi.entities.User;
-import ru.avdeev.marketsimpleapi.repository.UserRepository;
 import ru.avdeev.marketsimpleapi.repository.RoleRepository;
+import ru.avdeev.marketsimpleapi.repository.UserRepository;
 
 @Service
-public class UserService implements ReactiveUserDetailsService {
+public class UserService {
 
     UserRepository userRepository;
     RoleRepository roleRepository;
     PasswordEncoder encoder;
 
-    @Override
+
     @Transactional
-    public Mono<UserDetails> findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public Mono<User> findByUsername(String username) {
+        return userRepository.findByUsernameAndIsBlocked(username, false)
                 .flatMap(user -> roleRepository.findByUserId(user.getId())
                         .collectList()
                         .flatMap(roles -> {
                             user.setRoles(roles);
                             return Mono.just(user);
-                        }))
-                .cast(UserDetails.class);
+                        }));
     }
 
     public Mono<User> register(User user) {

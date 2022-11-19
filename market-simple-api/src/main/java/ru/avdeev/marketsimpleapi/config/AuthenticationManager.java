@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,12 +29,11 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         }
 
         if (username != null && jwtUtil.validateToken(authToken)) {
-
-
-            List<HashMap<String, String>> roles = jwtUtil.getClaims(authToken).get("roles", List.class);
+            
+            List<String> roles = JwtUtil.castList(String.class, jwtUtil.getClaims(authToken).get("roles", List.class));
 
             List<GrantedAuthority> authorities = roles.stream()
-                    .map(role -> new SimpleGrantedAuthority(role.get("role")))
+                    .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
             return Mono.just(new UsernamePasswordAuthenticationToken(username, null, authorities));

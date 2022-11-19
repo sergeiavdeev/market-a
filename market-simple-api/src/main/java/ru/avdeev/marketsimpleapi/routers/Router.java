@@ -30,6 +30,7 @@ import ru.avdeev.marketsimpleapi.exceptions.ApiException;
 import ru.avdeev.marketsimpleapi.routers.handlers.AuthHandler;
 import ru.avdeev.marketsimpleapi.routers.handlers.HelloHandler;
 import ru.avdeev.marketsimpleapi.routers.handlers.ProductHandler;
+import ru.avdeev.marketsimpleapi.routers.handlers.UserHandler;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class Router implements WebFluxConfigurer {
                             responses = {
                                     @ApiResponse(responseCode = "200",
                                             description = "successful operation",
-                                            content = @Content(schema = @Schema(implementation = ProductPageResponse.class))
+                                            content = @Content(schema = @Schema(implementation = PageResponse.class))
                                     )
                             },
                             parameters = {
@@ -256,6 +257,18 @@ public class Router implements WebFluxConfigurer {
         return route()
                 .path("/api/v1/auth", b -> b
                         .POST("", handler::auth)
+                ).build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> userRouter(UserHandler handler) {
+
+        return route()
+                .path("/api/v1/user", b -> b
+                        .GET("", handler::getPage)
+                        .POST("", handler::add)
+                        .PUT("", handler::update)
+                        .POST("/{id}/role", handler::setRole)
                 ).build();
     }
 

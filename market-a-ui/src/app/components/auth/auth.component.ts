@@ -3,7 +3,7 @@ import {Store} from "@ngrx/store";
 import {IAppState} from "../../store/state/app.state";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {EUserActions} from "../../store/actions/user.actions";
-import {selectUser} from "../../store/selectors/user.selector";
+import {selectToken, selectUser} from "../../store/selectors/user.selector";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 
@@ -17,13 +17,18 @@ export class AuthComponent {
         password: new FormControl('', Validators.required)
     });
 
-    user$ = this.store.select(selectUser).subscribe((user) => {
-        if (user.token.length > 0) {
-            localStorage.setItem('token', user.token.toString());
-            localStorage.setItem("user", JSON.stringify(user));
-            this.router.navigate(['/products']);
+    token$ = this.store.select(selectToken).subscribe((token) => {
+
+        if (token.length > 0) {
+            localStorage.setItem('token', token.toString());
+            this.router.navigate(['/products'])
+                .catch((e) => console.log(e));
         }
     });
+
+    user$ = this.store.select(selectUser).subscribe(user => {
+        localStorage.setItem('user', JSON.stringify(user));
+    })
 
     constructor(private store: Store<IAppState>,
                 private http: HttpClient,

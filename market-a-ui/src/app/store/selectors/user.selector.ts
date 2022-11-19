@@ -10,6 +10,11 @@ export const selectUser = createSelector(
     (state: IUserState) => state.user
 );
 
+export const selectToken = createSelector(
+    userSelector,
+    (state: IUserState) => state.token
+)
+
 export const selectUserIsAdmin = createSelector(
     userSelector,
     (state: IUserState) => {

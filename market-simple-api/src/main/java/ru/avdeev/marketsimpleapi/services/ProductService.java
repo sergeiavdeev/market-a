@@ -11,8 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import ru.avdeev.marketsimpleapi.dto.PageResponse;
 import ru.avdeev.marketsimpleapi.dto.ProductCreateRequest;
-import ru.avdeev.marketsimpleapi.dto.ProductPageResponse;
 import ru.avdeev.marketsimpleapi.dto.ProductResponse;
 import ru.avdeev.marketsimpleapi.entities.FileEntity;
 import ru.avdeev.marketsimpleapi.entities.Product;
@@ -41,7 +41,7 @@ public class ProductService {
     @Value("${product.default-page-size}")
     private String defaultPageSize;
 
-    public Mono<ProductPageResponse<ProductResponse>> getPage(Optional<String> page, Optional<String> size, Optional<String> title, Optional<String> minPrice, Optional<String> maxPrice, Optional<String> sort) {
+    public Mono<PageResponse<ProductResponse>> getPage(Optional<String> page, Optional<String> size, Optional<String> title, Optional<String> minPrice, Optional<String> maxPrice, Optional<String> sort) {
 
         int pageNum = Integer.parseInt(page.orElse("1"));
         int pageSize = Integer.parseInt(size.orElse(defaultPageSize));

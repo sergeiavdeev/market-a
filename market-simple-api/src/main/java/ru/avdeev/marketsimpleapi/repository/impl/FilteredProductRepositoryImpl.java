@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-import ru.avdeev.marketsimpleapi.dto.ProductPageResponse;
+import ru.avdeev.marketsimpleapi.dto.PageResponse;
 import ru.avdeev.marketsimpleapi.dto.ProductResponse;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.mappers.ProductMapper;
@@ -26,7 +26,7 @@ public class FilteredProductRepositoryImpl implements FilteredProductRepository 
 
     @Override
     @Transactional
-    public Mono<ProductPageResponse<ProductResponse>> getPage(Pageable page, Criteria criteria) {
+    public Mono<PageResponse<ProductResponse>> getPage(Pageable page, Criteria criteria) {
 
         Query query = Query.query(criteria)
                 .sort(page.getSort())
@@ -48,7 +48,7 @@ public class FilteredProductRepositoryImpl implements FilteredProductRepository 
                         databaseClient.select(Product.class)
                                 .from("product")
                                 .matching(query).count())
-                .map(t -> new ProductPageResponse<>(t.getT1(), t.getT2(), page.getPageNumber(), page.getPageSize()));
+                .map(t -> new PageResponse<>(t.getT1(), t.getT2(), page.getPageNumber(), page.getPageSize()));
     }
 
 }

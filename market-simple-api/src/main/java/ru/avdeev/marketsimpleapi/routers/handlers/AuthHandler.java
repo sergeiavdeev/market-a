@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import ru.avdeev.marketsimpleapi.config.JwtUtil;
 import ru.avdeev.marketsimpleapi.dto.AuthRequest;
-import ru.avdeev.marketsimpleapi.entities.User;
 import ru.avdeev.marketsimpleapi.mappers.UserMapper;
 import ru.avdeev.marketsimpleapi.services.UserService;
 
@@ -23,7 +22,6 @@ public class AuthHandler {
 
         return request.bodyToMono(AuthRequest.class)
                 .flatMap(credentials -> service.findByUsername(credentials.getUsername())
-                        .cast(User.class)
                         .zipWith(Mono.just(credentials.getPassword()))
                         .flatMap(t -> service.checkPassword(t.getT2(), t.getT1().getPassword())
                                 .flatMap(isAuth -> isAuth ?
