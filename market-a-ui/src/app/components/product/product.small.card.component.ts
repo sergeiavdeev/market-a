@@ -27,7 +27,7 @@ export class ProductSmallCardComponent {
             .catch((e) => console.log(e));
     }
 
-    addToCart(id: String) {
+    addToCart() {
         this.store.dispatch({type: ECartActions.Add, payload: this.product});
     }
 }

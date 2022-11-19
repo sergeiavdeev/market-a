@@ -102,7 +102,7 @@ export class ProductEffects {
         ofType(EProductsActions.DeleteFile),
         mergeMap((action: DeleteFile) => this.productService.deleteFile(action.payload.ownerId, action.payload.id)
             .pipe(
-                map((response) => ({type: EProductsActions.DeleteFileSuccess, payload: action.payload})),
+                map(() => ({type: EProductsActions.DeleteFileSuccess, payload: action.payload})),
                 catchError(error => of({type: EProductsActions.DeleteFileSuccess, payload: error}))
             )
         )
