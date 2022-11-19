@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg fixed-top bg-light">
     <div class="container">
-        <a class="navbar-brand" routerLink="/products" ariaCurrentWhenActive="page">
-            <img src="favicon.ico" alt="Logo" width="30" height="28" class="d-inline-block align-text-top">
+        <a class="navbar-brand" routerLink="/products">
+            <img src="favicon.ico" alt="Logo" width="28" height="30" class="d-inline-block align-text-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,17 +10,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/products" routerLinkActive="active" ariaCurrentWhenActive="page">Каталог</a>
+                    <a class="nav-link" routerLink="/products" routerLinkActive="active">Каталог</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" routerLink="/contacts" routerLinkActive="active" ariaCurrentWhenActive="page">Контакты</a>
+                    <a class="nav-link" routerLink="/contacts" routerLinkActive="active">Контакты</a>
                 </li>
             </ul>
             <form class="d-flex w-100" role="search">
                 <input class="form-control me-2" type="search" placeholder="Поиск..." aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Найти</button>
             </form>
-            <div class="d-flex flex-row w-100 justify-content-end">
+            <div class="d-flex flex-row w-100 justify-content-end" *ngIf="user$|async as user">
                 <div class="d-flex flex-column me-3">
                     <div class="d-flex justify-content-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -38,6 +38,9 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" routerLink="/profile">Профиль</a></li>
                                     <li><a class="dropdown-item" routerLink="/orders">Заказы</a></li>
+                                    <li [ngClass]="(isAdmin$|async) ? '' : 'd-none'">
+                                        <a class="dropdown-item" routerLink="/manage">Управление</a>
+                                    </li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
@@ -62,7 +65,7 @@
                         </svg>
                         <span class="position-absolute translate-middle badge rounded-pill bg-danger"
                               [ngClass]="cart.length == 0 ? 'd-none' : ''"
-                              style="top: 5px; right: 0px">
+                              style="top: 5px; right: 0">
                             {{cart.length}}
                         </span>
                     </div>

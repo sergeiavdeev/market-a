@@ -52,10 +52,11 @@ export const cartReducer = (
                 cartRows
             }
         case ECartActions.LoadFromStorage:
-            cartRows = action.payload;
+            return state;
+        case ECartActions.LoadFromStorageSuccess:
             return {
                 ...state,
-                cartRows
+                cartRows: action.payload
             }
         default:
             return state;

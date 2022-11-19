@@ -11,13 +11,10 @@ import {ECartActions} from "./store/actions/cart.actions";
 })
 export class AppComponent {
     title = 'web-app';
-    //cart: CartRow[] = [];
 
-    cart$ = this.store.select(selectCart).subscribe(value => {
-        if (value.length != 0) {
-            localStorage.setItem("cart", JSON.stringify(value));
-        }
-    })
+    cart$ = this.store.select(selectCart).subscribe(cart => {
+        this.store.dispatch({type: ECartActions.SaveToStorage, payload: cart});
+    });
 
     constructor(private store: Store<IAppState>) {
     }
@@ -28,11 +25,6 @@ export class AppComponent {
         if (user != null) {
             user = JSON.parse(user);
             this.store.dispatch({type: EUserActions.AuthSuccess, payload: user});
-        }
-        let cart = localStorage.getItem("cart");
-        if (cart != null) {
-            cart = JSON.parse(cart);
-            this.store.dispatch({type: ECartActions.LoadFromStorage, payload: cart});
         }
     }
 }

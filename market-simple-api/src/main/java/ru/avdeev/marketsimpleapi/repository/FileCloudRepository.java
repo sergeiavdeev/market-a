@@ -5,6 +5,8 @@ import reactor.core.publisher.Mono;
 
 public interface FileCloudRepository {
     Mono<Boolean> save(String folder, String filename, FilePart filePart);
-    Mono<Void> delete(String folder, String filename);
+
+    Mono<Boolean> delete(String folder, String filename);
+
     Mono<Void> deleteFolder(String folder);
 }

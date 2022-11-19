@@ -4,6 +4,7 @@ export class ExtFile {
     name: string = "";
     order: number = 0;
     descr: string = "";
+    file?: File;
 
     constructor() {
     }

@@ -2,7 +2,17 @@ import {Injectable} from "@angular/core";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {ProductService} from "../../services/product.service";
 import {catchError, map, mergeMap, of} from "rxjs";
-import {Add, Delete, EProductsActions, GetById, GetPage, SetPageParams, Update} from "../actions/products.actions";
+import {
+    Add,
+    AddFile,
+    Delete,
+    DeleteFile,
+    EProductsActions,
+    GetById,
+    GetPage,
+    SetPageParams,
+    Update
+} from "../actions/products.actions";
 import {Product} from "../../entities/product";
 import {Router} from "@angular/router";
 
@@ -87,6 +97,26 @@ export class ProductEffects {
             }
         })
     ), {dispatch: false});
+
+    deleteFile$ = createEffect(() => this.actions$.pipe(
+        ofType(EProductsActions.DeleteFile),
+        mergeMap((action: DeleteFile) => this.productService.deleteFile(action.payload.ownerId, action.payload.id)
+            .pipe(
+                map((response) => ({type: EProductsActions.DeleteFileSuccess, payload: action.payload})),
+                catchError(error => of({type: EProductsActions.DeleteFileSuccess, payload: error}))
+            )
+        )
+    ));
+
+    uploadFile$ = createEffect(() => this.actions$.pipe(
+        ofType(EProductsActions.AddFile),
+        mergeMap((action: AddFile) => this.productService.uploadFile(action.payload)
+            .pipe(
+                map((response) => ({type: EProductsActions.AddFileSuccess, payload: response})),
+                catchError(error => of({type: EProductsActions.AddFileSuccess, payload: error}))
+            )
+        )
+    ))
 
     constructor(
         private actions$: Actions,

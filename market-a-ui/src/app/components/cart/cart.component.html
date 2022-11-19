@@ -22,7 +22,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3 text-end">Сумма: {{row.count * row.product.price}} &#8381;</div>
+                            <div class="col-md-3 text-end">Сумма: {{(row.count * row.product.price).toFixed(2)}}
+                                &#8381;
+                            </div>
                             <div class="col-md-1 text-end">
                                 <button type="button" class="btn btn-light" (click)="deleteFromCart(row.product.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -50,7 +52,7 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-6"><h6>Товары ({{cartCount$|async}})</h6></div>
-                    <div class="col-md-6 text-end">{{cartSum$|async}} &#8381;</div>
+                    <div class="col-md-6 text-end">{{(cartSum$|async)?.toFixed(2)}} &#8381;</div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-6"><h6>Скидка</h6></div>
@@ -60,7 +62,7 @@
             <div class="card-footer">
                 <div class="row">
                     <div class="col md-6"><h5>Общая стоимось</h5></div>
-                    <div class="col md-6 text-end">{{cartSum$|async}} &#8381;</div>
+                    <div class="col md-6 text-end">{{(cartSum$|async)?.toFixed(2)}} &#8381;</div>
                 </div>
             </div>
         </div>

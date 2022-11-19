@@ -67,17 +67,20 @@ public class ProductHandler {
         return request.multipartData()
                 .flatMap(parts -> {
                     FilePart file = (FilePart) parts.toSingleValueMap().get("file");
-                    FormFieldPart order = (FormFieldPart) parts.toSingleValueMap().get("order");
-                    FormFieldPart descr = (FormFieldPart) parts.toSingleValueMap().get("descr");
-                    return productService.saveFile(file, request.pathVariable("id"),
-                            Optional.of(Integer.parseInt(order.value())), Optional.of(descr.value()));
+                    Optional<FormFieldPart> orderPart = Optional.ofNullable((FormFieldPart) parts.toSingleValueMap().get("order"));
+                    Optional<FormFieldPart> descrPart = Optional.ofNullable((FormFieldPart) parts.toSingleValueMap().get("descr"));
+
+                    Optional<Integer> order = Optional.of(Integer.parseInt(orderPart.map(FormFieldPart::value).orElse("0")));
+                    Optional<String> descr = Optional.of(descrPart.map(FormFieldPart::value).orElse(""));
+
+                    return productService.saveFile(file, request.pathVariable("id"), order, descr);
                 })
                 .flatMap(fileEntity -> ServerResponse.ok().bodyValue(fileEntity));
     }
 
     public Mono<ServerResponse> fileDelete(ServerRequest request) {
         return ServerResponse.ok()
-                .body(productService.fileDelete(UUID.fromString(request.pathVariable("id"))), Void.class);
+                .body(productService.fileDelete(UUID.fromString(request.pathVariable("id")), UUID.fromString(request.pathVariable("fileId"))), Void.class);
     }
 
     @Autowired

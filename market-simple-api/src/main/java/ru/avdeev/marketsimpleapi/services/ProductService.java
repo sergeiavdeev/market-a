@@ -107,10 +107,11 @@ public class ProductService {
                 .onErrorResume(Mono::error);
     }
 
-    public Mono<Void> fileDelete(UUID id) {
-        return fileRepository.findById(id)
-                .flatMap(fileEntity -> fileRepository.deleteById(id)
-                        .then(fileCloudRepository.delete(fileEntity.getOwnerId().toString(), fileEntity.getName())));
+    public Mono<Void> fileDelete(UUID productId, UUID fileId) {
+        return fileRepository.findById(fileId)
+                .flatMap(fileEntity -> fileCloudRepository.delete(productId.toString(), fileEntity.getName()))
+                .flatMap(success -> fileRepository.deleteById(fileId))
+                .onErrorResume(Mono::error);
     }
 
     @Autowired

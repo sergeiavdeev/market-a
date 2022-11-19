@@ -24,7 +24,7 @@ export class ProductGridComponent {
     });
 
     pageCount$ = this.store.select(selectPages).subscribe((p) => {
-       this.pageCount = p;
+        this.pageCount = p;
     });
 
     constructor(private store: Store<IAppState>) {
@@ -32,13 +32,14 @@ export class ProductGridComponent {
 
     ngOnInit() {
         if (this.productList.length == 0) {
-            this.store.dispatch({type: EProductsActions.AddProducts, payload: {page: 1, size: 8}});
+            this.store.dispatch({type: EProductsActions.AddProducts, payload: {page: 1, size: 50}});
         }
     }
 
     moreClick() {
         if (this.loadedPages < this.pageCount) {
             this.store.dispatch({type: EProductsActions.AddProducts, payload: {page: this.loadedPages + 1, size: 8}});
-        }               ``
+        }
+        ``
     }
 }

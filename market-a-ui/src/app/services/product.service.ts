@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {PageResponse, Product} from "../entities/product";
 import {environment} from "../../environments/environment";
+import {ExtFile} from "../entities/ext.file";
 
 const apiPath = environment.apiPath + "product/";
 
@@ -10,7 +11,7 @@ const apiPath = environment.apiPath + "product/";
 export class ProductService {
     constructor(private http: HttpClient) {
     }
-    
+
     getPage(page: number, size: number): Observable<PageResponse> {
         return this.http.get<PageResponse>(apiPath,
             {
@@ -54,5 +55,18 @@ export class ProductService {
             .pipe(map((response) => {
                 return response;
             }));
+    }
+
+    deleteFile(productId: String, fileId: String): Observable<any> {
+        return this.http.delete(apiPath + productId + "/file/" + fileId)
+            .pipe(map((response) => response));
+    }
+
+    uploadFile(file: ExtFile): Observable<any> {
+        if (!file.file) return new Observable<any>();
+        const formData = new FormData();
+        formData.append('file', file.file);
+        return this.http.post(apiPath + file.ownerId + '/file', formData)
+            .pipe(map(response => response));
     }
 }

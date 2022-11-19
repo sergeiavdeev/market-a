@@ -5,6 +5,13 @@ export interface ICartState {
 }
 
 export const initialCartState: ICartState = {
-    cartRows: []
+    cartRows: function () {
+        let cart = localStorage.getItem("cart");
+        console.log("Initial cart state");
+        if (cart) {
+            return JSON.parse(cart);
+        }
+        return [];
+    }()
 }
 

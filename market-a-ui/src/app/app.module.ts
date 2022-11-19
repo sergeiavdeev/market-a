@@ -24,6 +24,7 @@ import {ProductSmallCardComponent} from "./components/product/product.small.card
 import {AuthEffects} from "./store/effects/auth.effects";
 import {AuthInterceptor} from "./services/auth.interceptor";
 import {ProductDetailComponent} from "./components/product/product.detail.component";
+import {CartEffects} from "./store/effects/cart.effects";
 
 @NgModule({
     declarations: [
@@ -52,7 +53,7 @@ import {ProductDetailComponent} from "./components/product/product.detail.compon
             }
         }),
         StoreRouterConnectingModule.forRoot(),
-        EffectsModule.forRoot([ProductEffects, AuthEffects]),
+        EffectsModule.forRoot([ProductEffects, AuthEffects, CartEffects]),
         StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
         NgbModule
     ],

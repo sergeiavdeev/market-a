@@ -1,6 +1,7 @@
 import {initialProductsState, IProductsState} from "../state/products.state";
 import {EProductsActions, ProductsActions} from "../actions/products.actions";
 import {Product} from "../../entities/product";
+import {ExtFile} from "../../entities/ext.file";
 
 export const productsReducer = (
     state = initialProductsState,
@@ -8,6 +9,9 @@ export const productsReducer = (
 ): IProductsState => {
 
     let pList: Product[];
+    let fList: ExtFile[];
+    let tmpIndex: number;
+    let product: Product;
 
     switch (action.type) {
         case EProductsActions.GetPage:
@@ -128,6 +132,41 @@ export const productsReducer = (
                 pageNumber: action.payload.page,
                 pageSize: action.payload.size
             };
+        case EProductsActions.DeleteFile:
+            return {
+                ...state,
+                pending: true
+            }
+        case EProductsActions.DeleteFileSuccess:
+
+            product = Object.assign({}, state.selectedProduct);
+            fList = state.selectedProduct.files.slice(0);
+            tmpIndex = fList.findIndex(el => el.id == action.payload.id);
+            if (tmpIndex != -1) {
+                fList.splice(tmpIndex, 1);
+                product.files = fList;
+            }
+            return {
+                ...state,
+                pending: true,
+                error: action.payload,
+                selectedProduct: product
+            }
+        case EProductsActions.AddFile:
+            return {
+                ...state,
+                pending: true
+            }
+        case EProductsActions.AddFileSuccess:
+            product = Object.assign({}, state.selectedProduct);
+            fList = state.selectedProduct.files.slice(0);
+            fList.push(action.payload);
+            product.files = fList;
+            return {
+                ...state,
+                pending: false,
+                selectedProduct: product
+            }
         default:
             return state;
     }

@@ -5,6 +5,7 @@ import {ProductGridComponent} from "./components/product/product.grid.component"
 import {HomeComponent} from "./components/home/home.component";
 import {AuthComponent} from "./components/auth/auth.component";
 import {ProductDetailComponent} from "./components/product/product.detail.component";
+import {ProductListComponent} from "./components/product/product.list.component";
 
 const routes: Routes = [
     {
@@ -26,6 +27,10 @@ const routes: Routes = [
     {
         path: 'auth',
         component: AuthComponent
+    },
+    {
+        path: 'manage',
+        component: ProductListComponent
     },
     {
         path: '**',

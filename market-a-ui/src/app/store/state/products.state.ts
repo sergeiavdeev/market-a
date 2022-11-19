@@ -18,7 +18,7 @@ export const initialProductsState: IProductsState = {
     error: "",
     pending: false,
     pageNumber: 1,
-    pageSize: 6,
+    pageSize: 40,
     pageCount: 0,
     loadedPages: 0,
     productList: []

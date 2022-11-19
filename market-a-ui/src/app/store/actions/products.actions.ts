@@ -1,6 +1,7 @@
 import {Action} from "@ngrx/store";
 import {PageRequest, PageResponse, Product} from "../../entities/product";
 import {HttpResponse} from "@angular/common/http";
+import {ExtFile} from "../../entities/ext.file";
 
 export enum EProductsActions {
     GetPage = '[Products] get page',
@@ -20,7 +21,11 @@ export enum EProductsActions {
     UpdateError = '[Product] update error',
     SetPageParams = '[Products] set page number',
     AddProducts = '[Products] add products',
-    AddProductsSuccess = '[Products] add products successs'
+    AddProductsSuccess = '[Products] add products success',
+    DeleteFile = "[Products] delete file",
+    DeleteFileSuccess = "[Products] delete file success",
+    AddFile = "[Products] add file",
+    AddFileSuccess = "[Products] add file success"
 }
 
 export class GetPage implements Action {
@@ -149,10 +154,40 @@ export class AddProductsSuccess implements Action {
     }
 }
 
+export class DeleteFile implements Action {
+    public readonly type = EProductsActions.DeleteFile;
+
+    constructor(public payload: ExtFile) {
+    }
+}
+
+export class DeleteFileSuccess implements Action {
+    public readonly type = EProductsActions.DeleteFileSuccess;
+
+    constructor(public payload: ExtFile) {
+    }
+}
+
+export class AddFile implements Action {
+    public readonly type = EProductsActions.AddFile;
+
+    constructor(public payload: ExtFile) {
+    }
+}
+
+export class AddFileSuccess implements Action {
+    public readonly type = EProductsActions.AddFileSuccess;
+
+    constructor(public payload: ExtFile) {
+    }
+}
+
 export type ProductsActions =
     GetPage | GetPageSuccess | GetPageError
     | GetById | GetByIdSuccess | GetByIdError
     | Add | AddSuccess | AddError
     | Update | UpdateSuccess | UpdateError
     | Delete | DeleteSuccess | DeleteError
-    | SetPageParams | AddProducts | AddProductsSuccess;
+    | SetPageParams | AddProducts | AddProductsSuccess
+    | DeleteFile | DeleteFileSuccess
+    | AddFile | AddFileSuccess;

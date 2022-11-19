@@ -6,7 +6,10 @@ export enum ECartActions {
     Add = "[Cart] add",
     Delete = "[Cart] delete",
     SetCount = "[Cart] set count",
-    LoadFromStorage = "[Cart] load from storage"
+    LoadFromStorage = "[Cart] load from storage",
+    LoadFromStorageSuccess = "[Cart] load from storage success",
+    SaveToStorage = "[Cart] save to storage",
+    SaveToStorageSuccess = "[Cart] save to storage success"
 }
 
 export class Add implements Action {
@@ -33,12 +36,34 @@ export class SetCount implements Action {
 export class LoadFromStorage implements Action {
     public readonly type = ECartActions.LoadFromStorage;
 
+    constructor() {
+    }
+}
+
+export class LoadFromStorageSuccess implements Action {
+    public readonly type = ECartActions.LoadFromStorageSuccess;
+
     constructor(public payload: CartRow[]) {
     }
 }
 
+export class SaveToStorage implements Action {
+    public readonly type = ECartActions.SaveToStorage;
 
-export type CartActions = Add | Delete | SetCount | LoadFromStorage;
+    constructor(public payload: CartRow[]) {
+    }
+}
+
+export class SaveToStorageSuccess implements Action {
+    public readonly type = ECartActions.SaveToStorageSuccess;
+
+    constructor() {
+    }
+}
+
+
+export type CartActions = Add | Delete | SetCount | LoadFromStorage | LoadFromStorageSuccess
+    | SaveToStorage | SaveToStorageSuccess;
 
 
 

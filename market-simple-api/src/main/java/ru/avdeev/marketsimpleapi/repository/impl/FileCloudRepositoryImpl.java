@@ -56,28 +56,29 @@ public class FileCloudRepositoryImpl implements FileCloudRepository {
                 .body(BodyInserters.fromMultipartData(parts))
                 .exchangeToMono(response -> {
                     if (response.statusCode() != HttpStatus.OK)
-                        return Mono.error(new FileCloudException("Cant' save file into cloud"));
+                        return Mono.error(new FileCloudException("Can't save file into cloud"));
                     log.info("File saved to cloud");
                     return Mono.just(Boolean.TRUE);
                 });
     }
 
     @Override
-    public Mono<Void> delete(String folder, String filename) {
+    public Mono<Boolean> delete(String folder, String filename) {
+
+        String filePath = baseDir + folder;
+
         return webClient.post()
                 .uri(b -> b
                         .path(url)
                         .pathSegment(delete)
-                        .queryParam("folder", folder)
+                        .queryParam("folder", filePath)
                         .queryParam("name", filename)
                         .build())
                 .exchangeToMono(response -> {
-                    if (response.statusCode() == HttpStatus.OK) {
-                        log.info("File delete from cloud: {}", filename);
-                        return Mono.empty();
-                    }
-                    log.info("Delete file failing: {}", filename);
-                    return Mono.error(new FileCloudException("Delete file failing: " + filename));
+                    if (response.statusCode() != HttpStatus.OK)
+                        return Mono.error(new FileCloudException("Can't delete file into cloud"));
+                    log.info("File deleted from cloud");
+                    return Mono.just(Boolean.TRUE);
                 });
     }
 

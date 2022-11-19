@@ -12,7 +12,9 @@ import {ECartActions} from "../../store/actions/cart.actions";
 })
 export class ProductSmallCardComponent {
 
-    @Input() product: Product = new Product();
+    @Input()
+    product: Product = new Product();
+
     filePath: string = environment.fileStoragePath + "product/";
 
     constructor(private router: Router, private store: Store<IAppState>) {
