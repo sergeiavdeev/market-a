@@ -4,7 +4,7 @@ import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.avdeev.marketsimpleapi.dto.ProductCreateRequest;
-import ru.avdeev.marketsimpleapi.dto.ProductResponse;
+import ru.avdeev.marketsimpleapi.dto.ProductDto;
 import ru.avdeev.marketsimpleapi.entities.Product;
 
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
@@ -15,5 +15,5 @@ public abstract class ProductMapper {
     public abstract Product mapToProduct(ProductCreateRequest request);
 
 
-    public abstract ProductResponse mapToProductResponse(Product product);
+    public abstract ProductDto mapToProductResponse(Product product);
 }

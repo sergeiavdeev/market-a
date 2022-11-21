@@ -1,24 +1,21 @@
 package ru.avdeev.marketsimpleapi.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
 
 @Data
-public class UserDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class AddUserRequest {
 
-    private UUID id;
     private String username;
+    private String password;
     private String email;
     private String firstName;
     private String lastName;
     private String patronymic;
-    
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirthday;
-    private boolean isBlocked;
-    private List<String> roles;
 }

@@ -2,28 +2,36 @@ package ru.avdeev.marketsimpleapi.mappers;
 
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.avdeev.marketsimpleapi.dto.AddUserRequest;
 import ru.avdeev.marketsimpleapi.dto.AuthResponse;
 import ru.avdeev.marketsimpleapi.dto.UserDto;
-import ru.avdeev.marketsimpleapi.entities.Role;
-import ru.avdeev.marketsimpleapi.entities.User;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.avdeev.marketsimpleapi.entities.UserEntity;
 
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public abstract class UserMapper {
 
-    public abstract UserDto toUserDto(User user);
+    @Autowired
+    private PasswordEncoder encoder;
 
-    public List<String> toStringList(List<Role> roles) {
-        List<String> list = new ArrayList<>();
-        for (Role role : roles) list.add(role.getName());
-        return list;
+    public abstract UserDto db2UserDto(UserEntity user);
+
+    public UserEntity toUser(AddUserRequest source) {
+        return UserEntity.builder()
+                .username(source.getUsername())
+                .password(encoder.encode(source.getPassword()))
+                .firstName(source.getFirstName())
+                .lastName(source.getLastName())
+                .patronymic(source.getPatronymic())
+                .email(source.getEmail())
+                .dateOfBirthday(source.getDateOfBirthday())
+                .build();
     }
 
-    public AuthResponse toAuthResponse(User user, String token) {
+    public AuthResponse toAuthResponse(UserDto user, String token) {
         AuthResponse res = new AuthResponse();
-        res.setUser(toUserDto(user));
+        res.setUser(user);
         res.setToken(token);
         return res;
     }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.avdeev.marketsimpleapi.dto.PageResponse;
-import ru.avdeev.marketsimpleapi.dto.ProductResponse;
+import ru.avdeev.marketsimpleapi.dto.ProductDto;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.mappers.ProductMapper;
 import ru.avdeev.marketsimpleapi.repository.FileRepository;
@@ -26,7 +26,7 @@ public class FilteredProductRepositoryImpl implements FilteredProductRepository 
 
     @Override
     @Transactional
-    public Mono<PageResponse<ProductResponse>> getPage(Pageable page, Criteria criteria) {
+    public Mono<PageResponse<ProductDto>> getPage(Pageable page, Criteria criteria) {
 
         Query query = Query.query(criteria)
                 .sort(page.getSort())

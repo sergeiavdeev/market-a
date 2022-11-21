@@ -19,7 +19,7 @@ export class AuthComponent {
 
     token$ = this.store.select(selectToken).subscribe((token) => {
 
-        if (token.length > 0) {
+        if (token && token.length > 0) {
             localStorage.setItem('token', token.toString());
             this.router.navigate(['/products'])
                 .catch((e) => console.log(e));

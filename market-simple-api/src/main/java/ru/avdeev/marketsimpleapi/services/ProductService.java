@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.avdeev.marketsimpleapi.dto.PageResponse;
 import ru.avdeev.marketsimpleapi.dto.ProductCreateRequest;
-import ru.avdeev.marketsimpleapi.dto.ProductResponse;
+import ru.avdeev.marketsimpleapi.dto.ProductDto;
 import ru.avdeev.marketsimpleapi.entities.FileEntity;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.exceptions.EntityNotFondException;
@@ -41,7 +41,7 @@ public class ProductService {
     @Value("${product.default-page-size}")
     private String defaultPageSize;
 
-    public Mono<PageResponse<ProductResponse>> getPage(Optional<String> page, Optional<String> size, Optional<String> title, Optional<String> minPrice, Optional<String> maxPrice, Optional<String> sort) {
+    public Mono<PageResponse<ProductDto>> getPage(Optional<String> page, Optional<String> size, Optional<String> title, Optional<String> minPrice, Optional<String> maxPrice, Optional<String> sort) {
 
         int pageNum = Integer.parseInt(page.orElse("1"));
         int pageSize = Integer.parseInt(size.orElse(defaultPageSize));
@@ -55,7 +55,7 @@ public class ProductService {
         );
     }
 
-    public Mono<ProductResponse> getById(UUID id) {
+    public Mono<ProductDto> getById(UUID id) {
         return repository.findById(id)
                 .map(mapper::mapToProductResponse)
                 .flatMap(product -> fileRepository.findByOwnerIdOrderByOrder(product.getId())

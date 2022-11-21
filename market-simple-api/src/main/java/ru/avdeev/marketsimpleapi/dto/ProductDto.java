@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class ProductResponse {
+public class ProductDto {
 
     private UUID id;
     private String title;

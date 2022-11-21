@@ -257,6 +257,7 @@ public class Router implements WebFluxConfigurer {
         return route()
                 .path("/api/v1/auth", b -> b
                         .POST("", handler::auth)
+                        .filter(apiExceptionHandler())
                 ).build();
     }
 
@@ -269,6 +270,7 @@ public class Router implements WebFluxConfigurer {
                         .POST("", handler::add)
                         .PUT("", handler::update)
                         .POST("/{id}/role", handler::setRole)
+                        .filter(apiExceptionHandler())
                 ).build();
     }
 

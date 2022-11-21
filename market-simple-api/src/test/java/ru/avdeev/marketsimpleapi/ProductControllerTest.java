@@ -8,20 +8,19 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import ru.avdeev.marketsimpleapi.config.JwtUtil;
 import ru.avdeev.marketsimpleapi.dto.PageResponse;
+import ru.avdeev.marketsimpleapi.dto.UserDto;
 import ru.avdeev.marketsimpleapi.entities.Product;
-import ru.avdeev.marketsimpleapi.entities.Role;
-import ru.avdeev.marketsimpleapi.entities.User;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -45,13 +44,14 @@ public class ProductControllerTest {
     @Order(1)
     public void createProduct() {
 
-        User user = new User();
+        List<String> roles = new ArrayList<>();
+        roles.add("ROLE_ADMIN");
+        roles.add("ROLE_USER");
+
+        UserDto user = new UserDto();
         user.setUsername("admin");
-        user.setPassword("admin");
-        List<Role> roles = new ArrayList<>();
-        roles.add(new Role(UUID.fromString("98e02bb8-7b56-4dfd-bacd-499bad1c9ae8"), "ROLE_ADMIN"));
-        roles.add(new Role(UUID.fromString("98e02bb8-7b56-4dfd-bacd-499bad1c9ae7"), "ROLE_USER"));
         user.setRoles(roles);
+
         token = jwtUtil.generateToken(user);
 
         createdProduct = new Product();
@@ -104,6 +104,17 @@ public class ProductControllerTest {
                 .expectStatus().isOk()
                 .expectBody(Product.class).value(product -> assertThat(product.getPrice())
                         .isEqualTo(BigDecimal.valueOf(700)));
+    }
+
+    @Test
+    @Order(5)
+    public void testUNAUTHORIZED() {
+
+        createdProduct.setPrice(BigDecimal.valueOf(700));
+        client.put().uri(apiUrl)
+                .body(BodyInserters.fromValue(createdProduct))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test

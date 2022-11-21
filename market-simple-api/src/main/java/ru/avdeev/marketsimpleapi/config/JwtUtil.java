@@ -5,11 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.avdeev.marketsimpleapi.entities.Role;
-import ru.avdeev.marketsimpleapi.entities.User;
+import ru.avdeev.marketsimpleapi.dto.UserDto;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -39,11 +37,13 @@ public class JwtUtil {
                 .getExpiration()
                 .after(new Date());
     }
+    
 
-    public String generateToken(User user) {
+    public String generateToken(UserDto user) {
 
         HashMap<String, List<String>> claims = new HashMap<>();
-        claims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        // TODO
+        claims.put("roles", user.getRoles());
 
         long expirationSeconds = Long.parseLong(expirationTime);
         Date creationDate = new Date();
