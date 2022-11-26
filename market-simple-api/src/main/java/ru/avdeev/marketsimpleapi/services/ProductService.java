@@ -1,11 +1,14 @@
 package ru.avdeev.marketsimpleapi.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +20,6 @@ import ru.avdeev.marketsimpleapi.entities.FileEntity;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.exceptions.EntityNotFondException;
 import ru.avdeev.marketsimpleapi.mappers.ProductMapper;
-import ru.avdeev.marketsimpleapi.repository.FileCloudRepository;
-import ru.avdeev.marketsimpleapi.repository.FileRepository;
-import ru.avdeev.marketsimpleapi.repository.FilteredProductRepository;
 import ru.avdeev.marketsimpleapi.repository.ProductRepository;
 
 import java.util.Optional;
@@ -28,14 +28,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ProductService {
 
-    ProductRepository repository;
-    FileRepository fileRepository;
-    FilteredProductRepository filteredRepository;
-
-    FileCloudRepository fileCloudRepository;
-    ProductMapper mapper;
+    private final ProductRepository repository;
+    private final R2dbcEntityTemplate databaseClient;
+    private final FileService fileService;
+    private final FileCloudService fileCloudService;
+    private final ProductMapper mapper;
 
     @Value("${product.default-page-size}")
     private String defaultPageSize;
@@ -48,7 +48,7 @@ public class ProductService {
         if (pageNum < 1) pageNum = 1;
         if (pageSize < 1) pageSize = 1;
 
-        return filteredRepository.getPage(
+        return getPage(
                 PageRequest.of(pageNum - 1, pageSize, sort.isPresent() ? createSortFromString(sort.get()) : Sort.unsorted()),
                 creteCriteria(title, minPrice, maxPrice)
         );
@@ -57,7 +57,7 @@ public class ProductService {
     public Mono<ProductDto> getById(UUID id) {
         return repository.findById(id)
                 .map(mapper::mapToProductResponse)
-                .flatMap(product -> fileRepository.findByOwnerIdOrderByOrder(product.getId())
+                .flatMap(product -> fileService.getByOwnerId(product.getId())
                         .collectList()
                         .flatMap(fileEntities -> {
                             product.setFiles(fileEntities);
@@ -76,14 +76,14 @@ public class ProductService {
 
         return Mono.just(addProductRequest)
                 .map(mapper::mapToProduct)
-                .flatMap(product -> repository.save(product));
+                .flatMap(repository::save);
     }
 
     @Transactional
     public Mono<Void> delete(UUID id) {
         return repository.deleteById(id)
-                .then(fileRepository.deleteByOwnerId(id))
-                .then(fileCloudRepository.deleteFolder(id.toString()));
+                .then(fileService.deleteByOwnerId(id))
+                .then(fileCloudService.deleteFolder(id.toString()));
     }
 
     public Mono<FileEntity> saveFile(FilePart part, String productId, Optional<Integer> order, Optional<String> descr) {
@@ -93,8 +93,8 @@ public class ProductService {
         String fileName = String.format("%s.%s", newUUID, fileExtension);
         String dbFileName = String.format("%s.%s", newUUID, fileExtension);
 
-        return fileCloudRepository.save(productId, fileName, part)
-                .flatMap(success -> fileRepository.save(new FileEntity(
+        return fileCloudService.save(productId, fileName, part)
+                .flatMap(success -> fileService.save(new FileEntity(
                         null,
                         UUID.fromString(productId),
                         dbFileName,
@@ -104,23 +104,10 @@ public class ProductService {
     }
 
     public Mono<Void> fileDelete(UUID productId, UUID fileId) {
-        return fileRepository.findById(fileId)
-                .flatMap(fileEntity -> fileCloudRepository.delete(productId.toString(), fileEntity.getName()))
-                .flatMap(success -> fileRepository.deleteById(fileId))
+        return fileService.getById(fileId)
+                .flatMap(fileEntity -> fileCloudService.delete(productId.toString(), fileEntity.getName()))
+                .flatMap(success -> fileService.detete(fileId))
                 .onErrorResume(Mono::error);
-    }
-
-    @Autowired
-    public void init(ProductRepository repository,
-                     FilteredProductRepository filteredRepository,
-                     ProductMapper m,
-                     FileRepository fr,
-                     FileCloudRepository fc) {
-        this.repository = repository;
-        this.filteredRepository = filteredRepository;
-        mapper = m;
-        fileRepository = fr;
-        fileCloudRepository = fc;
     }
 
     private Sort createSortFromString(String sortString) {
@@ -157,5 +144,30 @@ public class ProductService {
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
             return fileName.substring(fileName.lastIndexOf(".") + 1);
         else return "";
+    }
+
+    private Mono<PageResponse<ProductDto>> getPage(Pageable page, Criteria criteria) {
+
+        Query query = Query.query(criteria)
+                .sort(page.getSort())
+                .limit(page.getPageSize())
+                .offset((long) page.getPageSize() * page.getPageNumber());
+
+        return databaseClient.select(Product.class).from("product")
+                .matching(query)
+                .all()
+                .map(mapper::mapToProductResponse)
+                .flatMap(product -> fileService.getByOwnerId(product.getId())
+                        .collectList()
+                        .flatMap(files -> {
+                            product.setFiles(files);
+                            return Mono.just(product);
+                        }))
+                .collectList()
+                .zipWith(
+                        databaseClient.select(Product.class)
+                                .from("product")
+                                .matching(query).count())
+                .map(t -> new PageResponse<>(t.getT1(), t.getT2(), page.getPageNumber(), page.getPageSize()));
     }
 }

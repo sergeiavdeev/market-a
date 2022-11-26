@@ -1,5 +1,6 @@
-package ru.avdeev.marketsimpleapi.repository.impl;
+package ru.avdeev.marketsimpleapi.services;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -7,18 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import ru.avdeev.marketsimpleapi.exceptions.FileCloudException;
-import ru.avdeev.marketsimpleapi.repository.FileCloudRepository;
 
-@Repository
+@Service
 @Slf4j
-public class FileCloudRepositoryImpl implements FileCloudRepository {
-
+@RequiredArgsConstructor
+public class FileCloudService {
     @Value("${cloud.dir.product}")
     private String baseDir;
 
@@ -33,11 +33,6 @@ public class FileCloudRepositoryImpl implements FileCloudRepository {
 
     private final WebClient webClient;
 
-    public FileCloudRepositoryImpl(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
-    @Override
     public Mono<Boolean> save(String folder, String filename, FilePart filePart) {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
@@ -62,7 +57,7 @@ public class FileCloudRepositoryImpl implements FileCloudRepository {
                 });
     }
 
-    @Override
+
     public Mono<Boolean> delete(String folder, String filename) {
 
         String filePath = baseDir + folder;
@@ -82,7 +77,7 @@ public class FileCloudRepositoryImpl implements FileCloudRepository {
                 });
     }
 
-    @Override
+
     public Mono<Void> deleteFolder(String folder) {
         return webClient.post()
                 .uri(b -> b
