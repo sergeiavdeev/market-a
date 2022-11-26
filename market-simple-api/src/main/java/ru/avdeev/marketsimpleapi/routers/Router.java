@@ -303,10 +303,7 @@ public class Router implements WebFluxConfigurer {
 
         return route()
                 .path("/api/v1/user", b -> b
-                        .GET("", handler::getPage)
                         .POST("", handler::add)
-                        .PUT("", handler::update)
-                        .POST("/{id}/role", handler::setRole)
                         .filter(apiExceptionHandler())
                 ).build();
     }

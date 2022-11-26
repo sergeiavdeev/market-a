@@ -18,26 +18,10 @@ public class UserHandler {
     private final UserService userService;
     private final UserMapper mapper;
 
-    public Mono<ServerResponse> getPage(ServerRequest request) {
-
-        return userService.findByUsername("admin")
-                .flatMap(user -> ServerResponse.ok().bodyValue(user));
-    }
-
     public Mono<ServerResponse> add(ServerRequest request) {
-        return request.bodyToMono(AddUserRequest.class).log()
+        return request.bodyToMono(AddUserRequest.class)
                 .map(mapper::toUser)
                 .flatMap(userService::register)
                 .flatMap(addUserRequest -> ServerResponse.ok().bodyValue(addUserRequest));
     }
-
-    public Mono<ServerResponse> update(ServerRequest request) {
-        return Mono.empty();
-    }
-
-    public Mono<ServerResponse> setRole(ServerRequest request) {
-        return Mono.empty();
-    }
-
-
 }
