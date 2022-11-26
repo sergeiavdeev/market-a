@@ -1,15 +1,17 @@
 package ru.avdeev.marketsimpleapi.routers.handlers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import ru.avdeev.marketsimpleapi.dto.AddProductRequest;
 import ru.avdeev.marketsimpleapi.dto.PageResponse;
-import ru.avdeev.marketsimpleapi.dto.ProductCreateRequest;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.services.ProductService;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 
 @Component
 @Slf4j
+@Tag(name = "Product")
 public class ProductHandler {
 
     ProductService productService;
@@ -43,12 +46,14 @@ public class ProductHandler {
                 .flatMap(product -> ServerResponse.ok().bodyValue(product));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ServerResponse> add(ServerRequest request) {
-        return request.bodyToMono(ProductCreateRequest.class)
+        return request.bodyToMono(AddProductRequest.class)
                 .flatMap(product -> productService.add(product))
                 .flatMap(product -> ServerResponse.ok().bodyValue(product));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ServerResponse> update(ServerRequest request) {
 
         return request.bodyToMono(Product.class).log()
@@ -56,12 +61,14 @@ public class ProductHandler {
                 .flatMap(product -> ServerResponse.ok().bodyValue(product));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ServerResponse> delete(ServerRequest request) {
 
         return productService.delete(UUID.fromString(request.pathVariable("id")))
                 .then(ServerResponse.ok().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ServerResponse> fileUpload(ServerRequest request) {
 
         return request.multipartData()
@@ -78,6 +85,7 @@ public class ProductHandler {
                 .flatMap(fileEntity -> ServerResponse.ok().bodyValue(fileEntity));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ServerResponse> fileDelete(ServerRequest request) {
         return ServerResponse.ok()
                 .body(productService.fileDelete(UUID.fromString(request.pathVariable("id")), UUID.fromString(request.pathVariable("fileId"))), Void.class);

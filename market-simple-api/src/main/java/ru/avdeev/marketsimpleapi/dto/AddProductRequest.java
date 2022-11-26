@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCreateRequest {
+public class AddProductRequest {
 
     @JsonProperty("title")
     private String title;

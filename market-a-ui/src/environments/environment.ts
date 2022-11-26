@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     fileStoragePath: "http://192.168.0.250/simple-market/files/",
-    apiPath: "http://192.168.0.198:8080/market/api/v1/",
+    apiPath: "http://192.168.0.87:8080/market/api/v1/",
     ROLE_ADMIN: "ROLE_ADMIN"
 };
 

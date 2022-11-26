@@ -7,12 +7,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.http.codec.multipart.FilePart;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import ru.avdeev.marketsimpleapi.dto.AddProductRequest;
 import ru.avdeev.marketsimpleapi.dto.PageResponse;
-import ru.avdeev.marketsimpleapi.dto.ProductCreateRequest;
 import ru.avdeev.marketsimpleapi.dto.ProductDto;
 import ru.avdeev.marketsimpleapi.entities.FileEntity;
 import ru.avdeev.marketsimpleapi.entities.Product;
@@ -68,22 +67,19 @@ public class ProductService {
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
     public Mono<Product> update(Product product) {
         return getById(product.getId())
                 .flatMap(existProduct -> repository.save(product));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    public Mono<Product> add(ProductCreateRequest productCreateRequest) {
+    public Mono<Product> add(AddProductRequest addProductRequest) {
 
-        return Mono.just(productCreateRequest)
+        return Mono.just(addProductRequest)
                 .map(mapper::mapToProduct)
                 .flatMap(product -> repository.save(product));
     }
 
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
     public Mono<Void> delete(UUID id) {
         return repository.deleteById(id)
                 .then(fileRepository.deleteByOwnerId(id))

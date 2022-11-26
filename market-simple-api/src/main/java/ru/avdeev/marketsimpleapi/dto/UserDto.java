@@ -16,7 +16,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String patronymic;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirthday;
     private boolean isBlocked;

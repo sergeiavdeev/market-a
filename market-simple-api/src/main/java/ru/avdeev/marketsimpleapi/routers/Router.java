@@ -27,10 +27,8 @@ import org.springframework.web.server.ServerWebInputException;
 import ru.avdeev.marketsimpleapi.dto.*;
 import ru.avdeev.marketsimpleapi.entities.Product;
 import ru.avdeev.marketsimpleapi.exceptions.ApiException;
-import ru.avdeev.marketsimpleapi.routers.handlers.AuthHandler;
-import ru.avdeev.marketsimpleapi.routers.handlers.HelloHandler;
-import ru.avdeev.marketsimpleapi.routers.handlers.ProductHandler;
-import ru.avdeev.marketsimpleapi.routers.handlers.UserHandler;
+import ru.avdeev.marketsimpleapi.model.Cart;
+import ru.avdeev.marketsimpleapi.routers.handlers.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -98,7 +96,7 @@ public class Router implements WebFluxConfigurer {
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))
                                     )
                             },
-                            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = ProductCreateRequest.class))),
+                            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = AddProductRequest.class))),
                             security = @SecurityRequirement(name = "jwt")
                     )
             ),
@@ -237,7 +235,7 @@ public class Router implements WebFluxConfigurer {
                     beanClass = AuthHandler.class,
                     method = RequestMethod.POST,
                     beanMethod = "auth",
-                    operation = @Operation(operationId = "auth",
+                    operation = @Operation(operationId = "auth", description = "Authenticate user",
                             responses = {
                                     @ApiResponse(responseCode = "200",
                                             description = "successful operation",
@@ -262,6 +260,45 @@ public class Router implements WebFluxConfigurer {
     }
 
     @Bean
+    @RouterOperations({
+            @RouterOperation(path = "/api/v1/user",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = UserHandler.class,
+                    method = RequestMethod.GET,
+                    beanMethod = "getPage",
+                    operation = @Operation(operationId = "getPage", description = "Get users",
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema(implementation = PageResponse.class))
+                                    ),
+                                    @ApiResponse(responseCode = "401",
+                                            description = "not authorized",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(path = "/api/v1/user",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = UserHandler.class,
+                    method = RequestMethod.POST,
+                    beanMethod = "add",
+                    operation = @Operation(operationId = "add", description = "Register new user",
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema(implementation = UserDto.class))
+                                    ),
+                                    @ApiResponse(responseCode = "404",
+                                            description = "bad request",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            },
+                            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = AddUserRequest.class)))
+                    )
+            )
+    })
     public RouterFunction<ServerResponse> userRouter(UserHandler handler) {
 
         return route()
@@ -270,6 +307,136 @@ public class Router implements WebFluxConfigurer {
                         .POST("", handler::add)
                         .PUT("", handler::update)
                         .POST("/{id}/role", handler::setRole)
+                        .filter(apiExceptionHandler())
+                ).build();
+    }
+
+    @Bean
+    @RouterOperations({
+            @RouterOperation(path = "/api/v1/cart",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = CartHandler.class,
+                    method = RequestMethod.GET,
+                    beanMethod = "getCurrentCart",
+                    operation = @Operation(operationId = "getCurrentCart", description = "Get cart",
+                            security = @SecurityRequirement(name = "jwt"),
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema(implementation = Cart.class))
+                                    ),
+                                    @ApiResponse(responseCode = "401",
+                                            description = "not authorized",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(path = "/api/v1/cart/add",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = CartHandler.class,
+                    method = RequestMethod.POST,
+                    beanMethod = "add",
+                    operation = @Operation(operationId = "add", description = "Add product to cart",
+                            security = @SecurityRequirement(name = "jwt"),
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "404",
+                                            description = "bad request",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "401",
+                                            description = "not authorized",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            },
+                            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = Product.class)))
+                    )
+            ),
+            @RouterOperation(path = "/api/v1/cart/delete",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = CartHandler.class,
+                    method = RequestMethod.POST,
+                    beanMethod = "delete",
+                    operation = @Operation(operationId = "delete", description = "Delete product from cart",
+                            security = @SecurityRequirement(name = "jwt"),
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "404",
+                                            description = "bad request",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "401",
+                                            description = "not authorized",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            },
+                            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = Product.class)))
+                    )
+            ),
+            @RouterOperation(path = "/api/v1/cart/clear",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = CartHandler.class,
+                    method = RequestMethod.POST,
+                    beanMethod = "clear",
+                    operation = @Operation(operationId = "clear", description = "Clear cart",
+                            security = @SecurityRequirement(name = "jwt"),
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "404",
+                                            description = "bad request",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "401",
+                                            description = "not authorized",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(path = "/api/v1/cart/change",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    beanClass = CartHandler.class,
+                    method = RequestMethod.POST,
+                    beanMethod = "change",
+                    operation = @Operation(operationId = "change", description = "Change cart position",
+                            security = @SecurityRequirement(name = "jwt"),
+                            responses = {
+                                    @ApiResponse(responseCode = "200",
+                                            description = "successful operation",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "404",
+                                            description = "bad request",
+                                            content = @Content(schema = @Schema())
+                                    ),
+                                    @ApiResponse(responseCode = "401",
+                                            description = "not authorized",
+                                            content = @Content(schema = @Schema())
+                                    )
+                            },
+                            requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = ChangeCartRequest.class)))
+                    )
+            )
+    })
+    public RouterFunction<ServerResponse> cartRouter(CartHandler handler) {
+
+        return route()
+                .path("/api/v1/cart", b -> b
+                        .GET("", handler::getCurrentCart)
+                        .POST("/add", handler::add)
+                        .POST("/delete", handler::delete)
+                        .POST("/clear", handler::clear)
+                        .POST("/change", handler::change)
                         .filter(apiExceptionHandler())
                 ).build();
     }
