@@ -264,24 +264,6 @@ public class Router implements WebFluxConfigurer {
             @RouterOperation(path = "/api/v1/user",
                     produces = {MediaType.APPLICATION_JSON_VALUE},
                     beanClass = UserHandler.class,
-                    method = RequestMethod.GET,
-                    beanMethod = "getPage",
-                    operation = @Operation(operationId = "getPage", description = "Get users",
-                            responses = {
-                                    @ApiResponse(responseCode = "200",
-                                            description = "successful operation",
-                                            content = @Content(schema = @Schema(implementation = PageResponse.class))
-                                    ),
-                                    @ApiResponse(responseCode = "401",
-                                            description = "not authorized",
-                                            content = @Content(schema = @Schema())
-                                    )
-                            }
-                    )
-            ),
-            @RouterOperation(path = "/api/v1/user",
-                    produces = {MediaType.APPLICATION_JSON_VALUE},
-                    beanClass = UserHandler.class,
                     method = RequestMethod.POST,
                     beanMethod = "add",
                     operation = @Operation(operationId = "add", description = "Register new user",

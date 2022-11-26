@@ -1,6 +1,6 @@
 package ru.avdeev.marketsimpleapi.services;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.List;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
-    private RoleService roleService;
-    private UserMapper mapper;
+    private final UserRepository userRepository;
+    private final RoleService roleService;
+    private final UserMapper mapper;
 
     @Value("${user.default.role}")
     private String defaultRole;

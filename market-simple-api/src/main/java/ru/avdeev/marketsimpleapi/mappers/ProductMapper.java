@@ -12,8 +12,8 @@ public abstract class ProductMapper {
 
     @Mapping(target = "title", source = "title")
     @Mapping(target = "price", source = "price")
-    public abstract Product mapToProduct(AddProductRequest request);
+    public abstract Product toProduct(AddProductRequest request);
 
 
-    public abstract ProductDto mapToProductResponse(Product product);
+    public abstract ProductDto toProductDto(Product product);
 }

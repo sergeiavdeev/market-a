@@ -56,7 +56,7 @@ public class ProductService {
 
     public Mono<ProductDto> getById(UUID id) {
         return repository.findById(id)
-                .map(mapper::mapToProductResponse)
+                .map(mapper::toProductDto)
                 .flatMap(product -> fileService.getByOwnerId(product.getId())
                         .collectList()
                         .flatMap(fileEntities -> {
@@ -75,7 +75,7 @@ public class ProductService {
     public Mono<Product> add(AddProductRequest addProductRequest) {
 
         return Mono.just(addProductRequest)
-                .map(mapper::mapToProduct)
+                .map(mapper::toProduct)
                 .flatMap(repository::save);
     }
 
@@ -156,8 +156,8 @@ public class ProductService {
         return databaseClient.select(Product.class).from("product")
                 .matching(query)
                 .all()
-                .map(mapper::mapToProductResponse)
-                .flatMap(product -> fileService.getByOwnerId(product.getId())
+                .map(mapper::toProductDto)
+                .concatMap(product -> fileService.getByOwnerId(product.getId())
                         .collectList()
                         .flatMap(files -> {
                             product.setFiles(files);
