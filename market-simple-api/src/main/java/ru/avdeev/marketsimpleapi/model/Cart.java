@@ -1,13 +1,11 @@
 package ru.avdeev.marketsimpleapi.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import ru.avdeev.marketsimpleapi.entities.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Data
 public class Cart {
@@ -15,9 +13,13 @@ public class Cart {
     private final List<CartItem> items;
     private BigDecimal total;
 
+    @JsonFormat(pattern = "yyyy-MM-ddThh:mm:ss")
+    private Date createdAt;
+
     public Cart() {
         items = new ArrayList<>();
         total = BigDecimal.ZERO;
+        createdAt = new Date();
     }
 
     public List<CartItem> getItems() {

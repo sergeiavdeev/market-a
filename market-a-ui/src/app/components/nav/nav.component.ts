@@ -3,8 +3,8 @@ import {IAppState} from "../../store/state/app.state";
 import {Store} from "@ngrx/store";
 import {EUserActions} from "../../store/actions/user.actions";
 import {selectUser, selectUserIsAdmin} from "../../store/selectors/user.selector";
-import {CartRow} from "../../entities/cart.row";
 import {selectCart} from "../../store/selectors/cart.selector";
+import {ICartState, initialCartState} from "../../store/state/cart.state";
 
 @Component({
     selector: 'nav-component',
@@ -12,7 +12,7 @@ import {selectCart} from "../../store/selectors/cart.selector";
 })
 export class NavComponent {
     title = 'web-app';
-    cart: CartRow[] = [];
+    cart: ICartState = initialCartState;
 
     user$ = this.store.select(selectUser);
     isAdmin$ = this.store.select(selectUserIsAdmin);
@@ -25,9 +25,9 @@ export class NavComponent {
     }
 
     logout(): boolean {
-        this.store.dispatch({type: EUserActions.Logout});
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        this.store.dispatch({type: EUserActions.Logout});
         return false;
     }
 }

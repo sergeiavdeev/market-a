@@ -30,6 +30,7 @@ export const userReducer = (
         case EUserActions.Logout:
             return {
                 ...state,
+                token: "",
                 user: new User()
             }
         default:

@@ -6,23 +6,24 @@ const cartSelector = (state: IAppState) => state.cart;
 
 export const selectCart = createSelector(
     cartSelector,
-    (state: ICartState) => state.cartRows
+    (state: ICartState) => state
 );
 
 export const selectCartCount = createSelector(
     cartSelector,
     (state: ICartState) => {
         let count = 0;
-        state.cartRows.map(el => count = count + el.count);
+        state.items.map(el => count = count + el.quantity);
         return count;
     }
 )
 
 export const selectCartSum = createSelector(
     cartSelector,
-    (state: ICartState) => {
-        let sum = 0;
-        state.cartRows.map(el => sum = sum + el.count * el.product.price);
-        return sum;
-    }
+    (state: ICartState) => state.total
+)
+
+export const selectCartItems = createSelector(
+    cartSelector,
+    (state: ICartState) => state.items
 )

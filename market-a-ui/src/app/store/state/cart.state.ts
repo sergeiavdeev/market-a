@@ -1,17 +1,25 @@
-import {CartRow} from "../../entities/cart.row";
+import {CartItem} from "../../entities/cart.item";
 
 export interface ICartState {
-    cartRows: CartRow[];
+    createdAt: Date;
+    total: number;
+    items: CartItem[];
 }
 
-export const initialCartState: ICartState = {
-    cartRows: function () {
-        let cart = localStorage.getItem("cart");
-        console.log("Initial cart state");
-        if (cart) {
-            return JSON.parse(cart);
-        }
-        return [];
-    }()
-}
+export const initialCartState: ICartState = iniCart()
 
+
+function iniCart(): ICartState {
+
+    let cart = localStorage.getItem("cart");
+    console.log("read cart");
+    if (cart) {
+        return JSON.parse(cart);
+    }
+
+    return {
+        createdAt: new Date(),
+        total: 0,
+        items: []
+    }
+}

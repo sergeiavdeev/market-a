@@ -1,64 +1,83 @@
 import {ICartState, initialCartState} from "../state/cart.state";
 import {CartActions, ECartActions} from "../actions/cart.actions";
-import {CartRow} from "../../entities/cart.row";
+import {CartItem} from "../../entities/cart.item";
 
 export const cartReducer = (
     state = initialCartState,
     action: CartActions
 ): ICartState => {
 
-    let cartRows: CartRow[];
+    let cartRows: CartItem[];
     let tmpRow;
     switch (action.type) {
         case ECartActions.Add:
-            cartRows = state.cartRows.slice(0);
-            tmpRow = cartRows.findIndex(el => el.product.id == action.payload.id);
-            if (tmpRow == -1) {
-                cartRows.push({count: 1, product: action.payload});
-            } else {
-                cartRows[tmpRow] = {
-                    count: cartRows[tmpRow].count + 1,
-                    product: action.payload
-                };
-            }
-            return {
-                ...state,
-                cartRows: cartRows
-            }
-        case ECartActions.Delete:
-            cartRows = state.cartRows.slice(0);
-            tmpRow = cartRows.findIndex(el => el.product.id == action.payload);
-            if (tmpRow != -1) cartRows.splice(tmpRow, 1);
-            return {
-                ...state,
-                cartRows
-            }
-        case ECartActions.SetCount:
-            cartRows = state.cartRows.slice(0);
-            tmpRow = cartRows.findIndex(el => el.product.id == action.payload.product.id);
+            cartRows = state.items.slice(0);
+            tmpRow = cartRows.findIndex(el => el.productId == action.payload.productId);
             if (tmpRow == -1) {
                 cartRows.push({
-                    count: action.payload.count,
-                    product: action.payload.product
+                    quantity: 1,
+                    productId: action.payload.productId,
+                    price: action.payload.price,
+                    total: action.payload.price
                 });
             } else {
                 cartRows[tmpRow] = {
-                    count: action.payload.count,
-                    product: action.payload.product
+                    quantity: cartRows[tmpRow].quantity + 1,
+                    productId: action.payload.productId,
+                    price: action.payload.price,
+                    total: action.payload.price * (cartRows[tmpRow].quantity + 1)
                 };
             }
             return {
                 ...state,
-                cartRows
+                items: cartRows,
+                total: total(cartRows)
+            }
+        case ECartActions.Delete:
+            cartRows = state.items.slice(0);
+            tmpRow = cartRows.findIndex(el => el.productId == action.payload);
+            if (tmpRow != -1) cartRows.splice(tmpRow, 1);
+            return {
+                ...state,
+                items: cartRows,
+                total: total(cartRows)
+            }
+        case ECartActions.SetCount:
+            cartRows = state.items.slice(0);
+            tmpRow = cartRows.findIndex(el => el.productId == action.payload.productId);
+            if (tmpRow == -1) {
+                cartRows.push({
+                    quantity: action.payload.quantity,
+                    productId: action.payload.productId,
+                    price: action.payload.price,
+                    total: action.payload.price
+                });
+            } else {
+                cartRows[tmpRow] = {
+                    quantity: action.payload.quantity,
+                    productId: action.payload.productId,
+                    price: action.payload.price,
+                    total: action.payload.price * action.payload.quantity
+                };
+            }
+            return {
+                ...state,
+                items: cartRows,
+                total: total(cartRows)
             }
         case ECartActions.LoadFromStorage:
             return state;
         case ECartActions.LoadFromStorageSuccess:
-            return {
-                ...state,
-                cartRows: action.payload
-            }
+            return action.payload;
         default:
             return state;
     }
+}
+
+function total(items: CartItem[]): number {
+    let res = 0;
+    items.map(el => {
+        res = res + el.total;
+    });
+    return res;
 }

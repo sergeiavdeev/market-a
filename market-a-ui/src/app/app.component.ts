@@ -25,7 +25,8 @@ export class AppComponent {
         let token = localStorage.getItem("token");
         if (user != null) {
             user = JSON.parse(user);
-            this.store.dispatch({type: EUserActions.AuthSuccess, payload: {toke: token, user: user}});
+            this.store.dispatch({type: EUserActions.AuthSuccess, payload: {token: token, user: user}});
+            this.store.dispatch({type: ECartActions.LoadFromApi});
         }
     }
 }

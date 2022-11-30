@@ -28,6 +28,9 @@ export class ProductSmallCardComponent {
     }
 
     addToCart() {
-        this.store.dispatch({type: ECartActions.Add, payload: this.product});
+        this.store.dispatch({
+            type: ECartActions.Add,
+            payload: {productId: this.product.id, quantity: 1, price: this.product.price}
+        });
     }
 }
