@@ -13,5 +13,10 @@
     <modules>
         <module>market-simple-api</module>
         <module>market-a-ui</module>
+        <module>discovery-service</module>
+        <module>market-commons</module>
+        <module>cart-service</module>
+        <module>api-gateway</module>
+        <module>user-service</module>
     </modules>
 </project>

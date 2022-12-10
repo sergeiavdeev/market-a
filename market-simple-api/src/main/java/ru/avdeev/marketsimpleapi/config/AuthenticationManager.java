@@ -1,6 +1,6 @@
 package ru.avdeev.marketsimpleapi.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class AuthenticationManager implements ReactiveAuthenticationManager {
 
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
@@ -38,12 +39,6 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
             return Mono.just(new UsernamePasswordAuthenticationToken(username, null, authorities));
         }
-
         return Mono.empty();
-    }
-
-    @Autowired
-    public void init(JwtUtil util) {
-        jwtUtil = util;
     }
 }
