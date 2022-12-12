@@ -106,7 +106,7 @@ public class ProductService {
     public Mono<Void> fileDelete(UUID productId, UUID fileId) {
         return fileService.getById(fileId)
                 .flatMap(fileEntity -> fileCloudService.delete(productId.toString(), fileEntity.getName()))
-                .flatMap(success -> fileService.detete(fileId))
+                .flatMap(success -> fileService.delete(fileId))
                 .onErrorResume(Mono::error);
     }
 

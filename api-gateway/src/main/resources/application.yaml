@@ -24,6 +24,14 @@ spring:
             - StripPrefix=1
             - PrefixPath=/
             - JwtAuth=
+        - id: order
+          uri: lb://order
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/
+            - JwtAuth=
       globalcors:
         cors-configurations:
           '[/**]':

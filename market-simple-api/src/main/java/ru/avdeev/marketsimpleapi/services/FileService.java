@@ -31,7 +31,7 @@ public class FileService {
         return repository.findById(id);
     }
 
-    Mono<Void> detete(UUID id) {
+    Mono<Void> delete(UUID id) {
         return repository.deleteById(id);
     }
 }
