@@ -1,0 +1,8 @@
+server:
+  port: 0
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
+    org.springframework.web.reactive: DEBUG
+    ru.avdeev.marketsimpleapi.routers.handlers: DEBUG

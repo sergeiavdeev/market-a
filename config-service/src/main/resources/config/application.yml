@@ -1,0 +1,25 @@
+spring:
+  r2dbc:
+    name: postgresql
+    url: r2dbc:postgresql://192.168.0.250:5432/postgres
+    username: market
+    password: 123456
+    properties:
+      schema: "simple-market"
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+jwt:
+  secret: grand-hotel-yandex-google-sky-vine
+  expiration: 86400
+
+page:
+  default:
+    number: 1
+    size: 10

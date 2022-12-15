@@ -1,3 +1,0 @@
-jwt:
-  secret: grand-hotel-yandex-google-sky-vine
-  expiration: 86400

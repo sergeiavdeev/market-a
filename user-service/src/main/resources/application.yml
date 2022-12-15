@@ -1,39 +1,8 @@
-server:
-  port: 0
-
 spring:
   application:
     name: user
-  r2dbc:
-    name: postgresql
-    url: r2dbc:postgresql://192.168.0.250:5432/postgres
-    username: market
-    password: 123456
-    properties:
-      schema: "simple-market"
-  data:
-    r2dbc:
-      repositories:
-        enabled: true
-
-jwt:
-  secret: grand-hotel-yandex-google-sky-vine
-  expiration: 86400
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    instance-id: ${spring.application.name}:${random.value}
-
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
-    org.springframework.web.reactive: DEBUG
-    ru.avdeev.marketsimpleapi.routers.handlers: DEBUG
-
-user:
-  default:
-    role: ROLE_USER
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: true
