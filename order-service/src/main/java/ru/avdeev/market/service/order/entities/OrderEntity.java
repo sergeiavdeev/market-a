@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-@Table(name="user_order")
+@Table(name="orders")
 public class OrderEntity {
 
     @Id

@@ -23,6 +23,7 @@ public class Router {
 
         return route()
                 .path("/api/v1", b -> b
+                        .GET("", handler::getPageByUserId)
                         .GET("/{id}", handler::getById)
                         .POST(handler::add)
                         .DELETE("/{id}", handler::delete)

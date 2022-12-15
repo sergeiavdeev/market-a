@@ -81,6 +81,4 @@ public class UserService {
                                 .matching(query).count())
                 .map(t -> new PageDto<>(t.getT1(), t.getT2(), Integer.parseInt(page) - 1, Integer.parseInt(size)));
     }
-
-
 }
