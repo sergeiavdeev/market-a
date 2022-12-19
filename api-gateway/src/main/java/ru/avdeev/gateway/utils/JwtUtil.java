@@ -25,8 +25,13 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String authToken) {
-        return getClaims(authToken)
-                .getExpiration()
-                .after(new Date());
+        try {
+            return getClaims(authToken)
+                    .getExpiration()
+                    .after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 }

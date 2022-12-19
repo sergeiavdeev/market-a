@@ -20,5 +20,6 @@
         <module>user-service</module>
         <module>order-service</module>
         <module>config-service</module>
+        <module>product-service</module>
     </modules>
 </project>

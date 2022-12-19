@@ -14,7 +14,7 @@
     <groupId>ru.avdeev</groupId>
     <artifactId>order-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <description>User service for jwt-token auth</description>
+    <description>Order service for market-a</description>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

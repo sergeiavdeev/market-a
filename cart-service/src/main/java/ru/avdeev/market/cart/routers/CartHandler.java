@@ -16,43 +16,42 @@ import ru.avdeev.market.dto.CartItemDto;
 public class CartHandler {
 
     private final CartService service;
-    private final CartMapper mapper;
 
     @Value("${headers.username}")
     private String USERNAME_HEADER;
 
     public Mono<ServerResponse> get(ServerRequest request) {
         return service.get(request.headers().firstHeader(USERNAME_HEADER))
-                .flatMap(cart -> ServerResponse.ok().bodyValue(mapper.convert2CartDto(cart)));
+                .flatMap(cart -> ServerResponse.ok().bodyValue(cart));
     }
 
     public Mono<ServerResponse> set(ServerRequest request) {
 
         return request.bodyToMono(CartDto.class)
-                .flatMap(cartDto -> service.set(request.headers().firstHeader(USERNAME_HEADER), mapper.convert2Cart(cartDto)))
-                .flatMap(cart -> ServerResponse.ok().bodyValue(mapper.convert2CartDto(cart)));
+                .flatMap(cartDto -> service.set(request.headers().firstHeader(USERNAME_HEADER), cartDto))
+                .flatMap(cartDto -> ServerResponse.ok().bodyValue(cartDto));
     }
 
     public Mono<ServerResponse> addItem(ServerRequest request) {
         return request.bodyToMono(CartItemDto.class)
-                .flatMap(item -> service.addItem(request.headers().firstHeader(USERNAME_HEADER), mapper.convert2CartItem(item)))
-                .flatMap(cart -> ServerResponse.ok().bodyValue(mapper.convert2CartDto(cart)));
+                .flatMap(item -> service.addItem(request.headers().firstHeader(USERNAME_HEADER), item))
+                .flatMap(cart -> ServerResponse.ok().bodyValue(cart));
     }
 
     public Mono<ServerResponse> clear(ServerRequest request) {
         return service.clear(request.headers().firstHeader(USERNAME_HEADER))
-                .flatMap(cart -> ServerResponse.ok().bodyValue(mapper.convert2CartDto(cart)));
+                .flatMap(cart -> ServerResponse.ok().bodyValue(cart));
     }
 
     public Mono<ServerResponse> delete(ServerRequest request) {
         return request.bodyToMono(CartItemDto.class)
-                .flatMap(item -> service.delete(request.headers().firstHeader(USERNAME_HEADER), mapper.convert2CartItem(item)))
-                .flatMap(cart -> ServerResponse.ok().bodyValue(mapper.convert2CartDto(cart)));
+                .flatMap(item -> service.delete(request.headers().firstHeader(USERNAME_HEADER), item))
+                .flatMap(cart -> ServerResponse.ok().bodyValue(cart));
     }
 
     public Mono<ServerResponse> change(ServerRequest request) {
         return request.bodyToMono(CartItemDto.class)
-                .flatMap(item -> service.change(request.headers().firstHeader(USERNAME_HEADER), mapper.convert2CartItem(item)))
-                .flatMap(cart -> ServerResponse.ok().bodyValue(mapper.convert2CartDto(cart)));
+                .flatMap(item -> service.change(request.headers().firstHeader(USERNAME_HEADER), item))
+                .flatMap(cart -> ServerResponse.ok().bodyValue(cart));
     }
 }

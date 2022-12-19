@@ -1,10 +1,9 @@
-package ru.avdeev.market.service.order.configuration;
+package ru.avdeev.market.service.product.configuration;
 
 import brave.http.HttpTracing;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -15,8 +14,6 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfiguration {
 
-    @Value("web.base-url")
-    private String baseUrl;
     @Bean
     public WebClient webClient(WebClient.Builder builder, ReactorNettyHttpTracing tracing) {
         return builder.clientConnector(
@@ -31,7 +28,6 @@ public class WebClientConfiguration {
                         )
                 )
         )
-                .baseUrl(baseUrl)
                 .codecs(clientCodecConfigurer -> clientCodecConfigurer
                         .defaultCodecs()
                         .maxInMemorySize(100 * 1024))

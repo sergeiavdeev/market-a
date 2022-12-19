@@ -8,6 +8,14 @@ spring:
           enabled: false
           lower-case-service-id: true
       routes:
+        - id: product
+          uri: lb://product
+          predicates:
+            - Path=/product/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/
+            - JwtAuth=
         - id: cart
           uri: lb://cart
           predicates:

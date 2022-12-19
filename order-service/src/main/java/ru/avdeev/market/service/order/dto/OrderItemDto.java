@@ -3,6 +3,7 @@ package ru.avdeev.market.service.order.dto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
+import ru.avdeev.market.dto.ProductDto;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -21,4 +22,6 @@ public class OrderItemDto {
     private Integer count;
 
     private BigDecimal total;
+
+    private ProductDto product;
 }

@@ -1,4 +1,4 @@
-package ru.avdeev.market.service.order.configuration;
+package ru.avdeev.market.cart.config;
 
 import brave.http.HttpTracing;
 import io.netty.channel.ChannelOption;
@@ -15,7 +15,7 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfiguration {
 
-    @Value("web.base-url")
+    @Value("${web.base-url}")
     private String baseUrl;
     @Bean
     public WebClient webClient(WebClient.Builder builder, ReactorNettyHttpTracing tracing) {

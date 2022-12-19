@@ -1,0 +1,13 @@
+server:
+  port: 0
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
+    org.springframework.web.reactive: DEBUG
+cloud:
+  url: 192.168.0.250/simple-market
+  upload: upload.php
+  delete: delete.php
+  dir:
+    product: product/
